@@ -8,6 +8,7 @@ import (
 const (
 	CodeOK           = 0
 	CodeInvalidInput = 1001
+	CodeInternal     = 2000
 )
 
 type Request struct {

@@ -24,5 +24,7 @@ Command protocol is JSON-based:
 
 - `app/`: minimal Rust binary to establish build chain.
 - `core/`: minimal Go module with request/response primitives and tests.
+- `core/bridge/`: C ABI exports (`jy_init`, `jy_execute`, `jy_shutdown`, `jy_free`) for Rust FFI.
+- `app/src/ffi_bridge.rs`: optional Rust FFI layer (enabled by `ffi_bridge` feature).
 
 This scaffold is intentionally small so CI and branch flow can be validated first.
