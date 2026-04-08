@@ -28,3 +28,8 @@ Command protocol is JSON-based:
 - `app/src/ffi_bridge.rs`: optional Rust FFI layer (enabled by `ffi_bridge` feature).
 
 This scaffold is intentionally small so CI and branch flow can be validated first.
+
+## Related Docs
+
+- Build instructions: `docs/BUILD.md`
+- ABI schema draft: `docs/ABI_CONTRACT.md`

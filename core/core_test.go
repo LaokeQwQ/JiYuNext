@@ -23,6 +23,13 @@ func TestExecuteRequiresAction(t *testing.T) {
 	}
 }
 
+func TestExecuteRejectsMalformedJSON(t *testing.T) {
+	resp := Execute(`{"action":"ping"`)
+	if resp.Code != CodeInvalidInput {
+		t.Fatalf("expected CodeInvalidInput, got %d", resp.Code)
+	}
+}
+
 func TestExecuteAcceptsAction(t *testing.T) {
 	resp := Execute(`{"action":"ping","trace_id":"t-2"}`)
 	if resp.Code != CodeOK {
@@ -30,6 +37,16 @@ func TestExecuteAcceptsAction(t *testing.T) {
 	}
 	if resp.TraceID != "t-2" {
 		t.Fatalf("expected trace_id t-2, got %s", resp.TraceID)
+	}
+}
+
+func TestExecuteBackfillsTraceID(t *testing.T) {
+	resp := Execute(`{"action":"ping"}`)
+	if resp.Code != CodeOK {
+		t.Fatalf("expected CodeOK, got %d", resp.Code)
+	}
+	if resp.TraceID != "trace-missing" {
+		t.Fatalf("expected fallback trace_id, got %s", resp.TraceID)
 	}
 }
 

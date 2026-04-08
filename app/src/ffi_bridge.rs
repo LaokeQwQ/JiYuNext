@@ -69,3 +69,20 @@ mod disabled {
 pub use disabled::{call_execute, call_init, call_shutdown};
 #[cfg(feature = "ffi_bridge")]
 pub use enabled::{call_execute, call_init, call_shutdown};
+
+#[cfg(all(test, not(feature = "ffi_bridge")))]
+mod tests {
+    use super::{call_execute, call_init, call_shutdown};
+
+    #[test]
+    fn disabled_feature_returns_clear_error() {
+        let init = call_init("{}").expect_err("ffi should be unavailable without feature");
+        let exec = call_execute(r#"{"action":"ping"}"#)
+            .expect_err("ffi should be unavailable without feature");
+        let shutdown = call_shutdown().expect_err("ffi should be unavailable without feature");
+
+        assert!(init.contains("ffi_bridge"));
+        assert!(exec.contains("ffi_bridge"));
+        assert!(shutdown.contains("ffi_bridge"));
+    }
+}
