@@ -45,7 +45,8 @@ foreach ($branch in $branches) {
   } | ConvertTo-Json -Depth 6
 
   $tmp = New-TemporaryFile
-  Set-Content -LiteralPath $tmp.FullName -Value $body -Encoding utf8
+  $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+  [System.IO.File]::WriteAllText($tmp.FullName, $body, $utf8NoBom)
 
   & $gh api `
     --method PUT `
