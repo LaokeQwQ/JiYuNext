@@ -1,0 +1,55 @@
+name: PR Guard
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review, edited]
+    branches:
+      - dev
+      - canary
+      - release
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  validate-branch-flow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate branch promotion policy
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          echo "Validating PR route: ${HEAD_REF} -> ${BASE_REF}"
+
+          case "${BASE_REF}" in
+            dev)
+              # dev is the integration branch; do not allow backflow from protected branches.
+              if [[ "${HEAD_REF}" == "canary" || "${HEAD_REF}" == "release" ]]; then
+                echo "::error::PR to dev cannot come from canary/release."
+                exit 1
+              fi
+              ;;
+            canary)
+              # canary only accepts promotion from dev.
+              if [[ "${HEAD_REF}" != "dev" ]]; then
+                echo "::error::Only dev is allowed to merge into canary."
+                exit 1
+              fi
+              ;;
+            release)
+              # release only accepts promotion from canary.
+              if [[ "${HEAD_REF}" != "canary" ]]; then
+                echo "::error::Only canary is allowed to merge into release."
+                exit 1
+              fi
+              ;;
+            *)
+              echo "::error::Unsupported base branch: ${BASE_REF}"
+              exit 1
+              ;;
+          esac
+
+          echo "Branch route check passed."
+

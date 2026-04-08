@@ -1,0 +1,50 @@
+name: PR CI
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    branches:
+      - dev
+      - canary
+      - release
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-lint:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        if: ${{ hashFiles('app/Cargo.toml') != '' }}
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Go
+        if: ${{ hashFiles('core/go.mod') != '' }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+
+      - name: Run Rust tests
+        if: ${{ hashFiles('app/Cargo.toml') != '' }}
+        shell: pwsh
+        run: |
+          cargo test --manifest-path app/Cargo.toml --all-targets --locked
+
+      - name: Run Go tests
+        if: ${{ hashFiles('core/go.mod') != '' }}
+        shell: pwsh
+        run: |
+          Push-Location core
+          go test ./...
+          Pop-Location
+
+      - name: Mark empty scaffold as pass
+        if: ${{ hashFiles('app/Cargo.toml') == '' && hashFiles('core/go.mod') == '' }}
+        shell: pwsh
+        run: |
+          Write-Host "No Rust/Go module detected yet. CI passes for scaffold stage."
+
