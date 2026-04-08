@@ -22,4 +22,9 @@
 *.enc
 *.recipe
 /WORKLOG.MD
+/app/target/
+/core/bin/
+/core/.cache/
+/dist/
+*.test
 
