@@ -3,6 +3,8 @@
 > 面向 Windows 的本地桌面工具项目  
 > 目标：轻量、即开即用、无需额外运行库
 
+> 本项目基于原项目 [imengyu/JiYuTrainer](https://github.com/imengyu/JiYuTrainer) 进行重构。
+
 ## 项目统计
 
 [![Release](https://img.shields.io/github/v/release/LaokeQwQ/JiYuNext?style=for-the-badge&label=Release)](https://github.com/LaokeQwQ/JiYuNext/releases)
@@ -17,14 +19,6 @@
 ## 项目状态
 
 JiYuNext 处于重构阶段，正式可用版本将通过 GitHub Releases 发布。
-
-### 当前进度看板
-
-| 模块 | 进度 | 说明 |
-|---|---:|---|
-| 架构重构 | 20% | 旧项目清理完成，新架构文档与任务板已就位 |
-| 构建与发布链路 | 40% | 已配置 `release` 分支自动构建/测试/发版流程 |
-| 用户可下载版本 | 0% | 等待核心代码迁移完成后发布 |
 
 ## 核心目标
 
